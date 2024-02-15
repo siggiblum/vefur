@@ -334,3 +334,5 @@ def credit_spread():
         lokatafla2.append([final2['index'][ind], final2['Vigtuð krafa'][ind], final2['Krafa fyrirtækjabréfs_Minni'][ind], final2['Credit Spread'][ind]])
     lokatafla2 = lokatafla2 + lokatafla
     return lokatafla2
+
+print(credit_spread())

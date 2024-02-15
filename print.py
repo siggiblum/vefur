@@ -30,5 +30,8 @@ columns = ["Nafn", "BID", "ASK", "YLD_YTM_BID", "CPN_FREQ", "DUR_MID", "DAYS_TO_
 # Create the DataFrame
 df = pd.DataFrame(data, columns=columns)
 
-# Show the DataFrame
-print(df)
+rik_overd = []
+rik_verd = []
+
+if ("RVKN24 1" in df["Nafn"].values):
+    print("Yes")
