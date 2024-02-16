@@ -107,17 +107,13 @@ def nss_main():
 
         longtermrate = yields[-1]/100
         if i != 'Verðtryggt':
-            print(y_values_data2)
             b1 = y_values_data2[-1]/100-y_values_data2[0]/100
-            print(b1)
             b2 = -y_values_data2[0]/100+2*((y_values_data2[-3]+y_values_data2[-2])/2/100)-y_values_data2[-1]/100
             b3 = y_values_data2[-1]/100 - ((y_values_data2[-3]+y_values_data2[-2])/2)/100
             lambda1 = data2['dur'][-1]
             lambda2 = data2['dur'][-2]
         else:
-            print(y_values_data2)
             b1 = y_values_data2[-1]/100-y_values_data2[0]/100
-            print(b1)
             b2 = -y_values_data2[0]/100+2*y_values_data2[1]/100-y_values_data2[-1]/100
             b3 = y_values_data2[-1]/100 - y_values_data2[-3]/100
             lambda1 = data2['dur'][-1]
@@ -147,8 +143,6 @@ def nss_main():
         #Reikna núverandi yield kúrfu
         fitted_params2 = fit_nelson_siegel(x_values_data2, y_values_data2, 0, initial, inequality_constraints) 
         fitted_params2 = [fitted_params2[0], fitted_params2[1], fitted_params2[2], fitted_params2[3], fitted_params2[4], fitted_params[5]] 
-        print(fitted_params)
-        print(fitted_params2)
         yield_curve2 = nelson_siegel(tau_plot, *fitted_params2)
 
 

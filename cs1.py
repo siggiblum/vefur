@@ -1,7 +1,12 @@
 import pandas as pd 
 from bloomtest import *
 
-def calculate_weights(length_smaller, length_larger, length_corporate):
+def calculate_weights(length_smaller, length_larger, length_corporate, longest_gov_bond_duration):
+    # When the corporate bond's duration exceeds the longest government bond's duration
+    if length_corporate > longest_gov_bond_duration:
+        # Directly use the yield of the longest-duration government bond
+        return 0, 1
+
     if length_smaller == length_larger:
         # Avoid division by zero in case both lengths are equal
         return 0.5, 0.5
@@ -63,37 +68,31 @@ def credit_spread():
             big_krafa = krafa
         return small, big, small_krafa, big_krafa
 
-    result = {}
+    result = []
     for nafn in fyrir_overd:
         if(nafn in data["Nafn"].values):
             duration = data.loc[data["Nafn"] == nafn, "DUR_MID"].iloc[0]
             krafa = data.loc[data["Nafn"] == nafn, "YLD_YTM_BID"].iloc[0]
             liftimi_small, liftimi_big, krafa_small, krafa_big = closest_mat("Ó", duration, krafa)
-            vigt1, vigt2 = calculate_weights(liftimi_small, liftimi_big, duration)
+            longest_rik_overd_duration = data[data['Nafn'].isin(rik_verd)]['DUR_MID'].max()
+            vigt1, vigt2 = calculate_weights(liftimi_small, liftimi_big, duration, longest_rik_overd_duration)
 
             new_rik = vigt1 * krafa_small + vigt2 * krafa_big
             cs = duration - new_rik
-            result[nafn] = cs
+            
+            result.append([nafn, krafa, new_rik, cs])
 
     for nafn in fyrir_verd:
         if(nafn in data["Nafn"].values):
             duration = data.loc[data["Nafn"] == nafn, "DUR_MID"].iloc[0]
             krafa = data.loc[data["Nafn"] == nafn, "YLD_YTM_BID"].iloc[0]
             liftimi_small, liftimi_big, krafa_small, krafa_big = closest_mat("V", duration, krafa)
-            vigt1, vigt2 = calculate_weights(liftimi_small, liftimi_big, duration)
-            print(nafn)
-            new_rik = vigt1 * krafa_small + vigt2 * krafa_big
-            print("Líftímar")
-            print(duration)
-            print(liftimi_small, liftimi_big)
-            print("Kröfur")
-            print(krafa)
-            print(krafa_small, krafa_big)
-            # print(new_rik)
-            # print(duration)
+            longest_rik_verd_duration = data[data['Nafn'].isin(rik_verd)]['DUR_MID'].max()
+            vigt1, vigt2 = calculate_weights(liftimi_small, liftimi_big, duration, longest_rik_verd_duration)
+            new_rik = vigt2 * krafa_small + vigt1 * krafa_big
+            
             cs = krafa - new_rik
-            result[nafn] = cs
-
+            result.append([nafn, krafa, new_rik, cs])
     return result
 
 print(credit_spread())

@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 from valag import *
 from framvirkir_vextir import *
 import datetime
-from cs import *
+from cs1 import *
 from nss2 import * 
 
 app = Flask(__name__)
@@ -20,15 +20,6 @@ def is_market_open():
 
     return current_time < market_close_time
 
-# def credit_spread():
-#     """
-#         Herna kemur credit spread, sem returnar nafni, krofu a RIK, krofu a brefid, og credit spread
-#     """
-#     return ["ARION CB", 2, 3, 1]
-
-
-def framvirkir_vextir():
-    return [[1,2], [2,3], [4,5], [7, 8], [10, 9]]
 
 # Define a route to get the line chart data
 @app.route('/data')
@@ -58,8 +49,8 @@ def table_data():
     for i in range(len(info)):
         data = {
             'Name': str(round(info[i][2], 4))+"%",
-            'RIK': str(round(info[i][3], 4))+"%",
-            'Bond': info[i][0],
+            'Bond': str(round(info[i][3], 4))+"%",
+            'RIK': info[i][0],
             'Credit Spread': str(round(info[i][1], 4))+"%"
         }
         table_data.append(data)

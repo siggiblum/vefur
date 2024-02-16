@@ -139,7 +139,6 @@ def verdlag():
             return 0.5, 0.5
         weight_1 = (length_corporate - length_larger) / (length_smaller - length_larger)
         weight_2 = 1 - weight_1
-        print("w1 ", weight_1, " w2", weight_2)
         return weight_1, weight_2
 
 
@@ -244,7 +243,6 @@ def verdlag():
             'Vigt 2': w2,
             'Vigtuð krafa': w1 * finalkrofudict['Krafa_Minni'][ind] + w2 * finalkrofudict['Krafa_Stærri'][ind],
         }
-    print("fm", vigtir)
 
 
     vigtir_df = pd.DataFrame.from_dict(vigtir)
@@ -352,7 +350,6 @@ def verdlag():
     # print(final2)
 
     reikna_alag = final.join(final2, lsuffix='_Óverðtryggð', rsuffix='_Verðtryggð')
-    print(reikna_alag)
     reikna_alag.to_excel('Valag.xlsx')
     alag_final = {}
     alag_bref = {}
@@ -379,12 +376,6 @@ def verdlag():
     listi2 = []
     for ind in df.index:
         listi1.append([ind, alag_final[ind]['Verðbólguálag']])
-    print(listi1)
     for ind in df2.index:
         listi2.append([ind, df2['Duration'][ind], df2['Verðbólguálag'][ind]])
-    print(listi2)
     return listi1, listi2
-
-l, x = verdlag()
-print(x)
-print("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
