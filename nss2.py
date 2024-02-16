@@ -121,7 +121,6 @@ def nss_main():
         
         
         initial = [longtermrate, b1, b2, b3, lambda2, lambda1]
-        print(initial)
         for reg in regularization_strengths:
             fitted_params = fit_nelson_siegel(tau, observed_yields, reg, initial)
             rmse = compute_rmse(tau, observed_yields, fitted_params, reg)

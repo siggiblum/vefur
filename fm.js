@@ -87,44 +87,28 @@ async function updateChart(data, option) {
 });
 }
 
-    let tableDataFetchInterval;
-
-
     function startTableDataFetch() {
         console.log("Setting up table data fetch interval");
-        if (tableDataFetchInterval) {
-            clearInterval(tableDataFetchInterval);
-        }
-        tableDataFetchInterval = setInterval(async () => {
+        setInterval(async () => {
             console.log("Fetching table data...");
             await populateTable();
         }, 60000); // Adjusted to 60,000 ms (1 minute)
     }
 
-    let inflationDataFetchInterval;
-
     function startInflationDataFetch() {
         console.log("Setting up inflation data fetch interval");
-        if (inflationDataFetchInterval) {
-            clearInterval(inflationDataFetchInterval);
-        }
-        inflationDataFetchInterval = setInterval(async () => {
+        setInterval(async () => {
             console.log("Fetching inflation data...");
             await updateInflationChart();
-        }, 60000); // Adjusted to 60,000 ms (1 minute)
+        }, 60000);
     }
-
-    let forwardRatesFetchInterval;
 
     function startForwardRatesFetch() {
         console.log("Setting up forward rates fetch interval");
-        if (forwardRatesFetchInterval) {
-            clearInterval(forwardRatesFetchInterval);
-        }
-        forwardRatesFetchInterval = setInterval(async () => {
+        setInterval(async () => {
             console.log("Fetching forward rates data...");
             await updateforward('forward_rate'); // Adjust the argument as necessary
-        }, 60000); // Adjusted to 60,000 ms (1 minute)
+        }, 60000);
     }
 
 let isFetchingTableData = false;
@@ -144,34 +128,33 @@ async function populateTable() {
 
     // Clear existing rows
     table.innerHTML = '';
+
     // Populate the table with data
     tableData.forEach(item => {
-        const row = table.insertRow();
+    const row = table.insertRow();
 
-        // Explicitly create a cell for each column in the correct order
-        const nameCell = row.insertCell();
-        nameCell.innerHTML = item.Name; // Assuming 'Name' is the correct property name
-        nameCell.classList.add('cell-style');
-
-        const bondCell = row.insertCell();
-        bondCell.innerHTML = item.Bond; // Assuming 'Bond' is the correct property name
-        bondCell.classList.add('cell-style');
-
-        const rikCell = row.insertCell();
-        rikCell.innerHTML = item.RIK; // Assuming 'RIK' is the correct property name
-        rikCell.classList.add('cell-style');
-
-        const creditSpreadCell = row.insertCell();
-        creditSpreadCell.innerHTML = item['Credit Spread']; // Assuming 'Credit Spread' is the correct property name
-        creditSpreadCell.classList.add('cell-style');
+    // Create a cell for each key-value pair in the item object
+    Object.values(item).forEach(value => {
+        const cell = row.insertCell();
+        cell.innerHTML = value;
+        // Optionally, you can add a class to cells if you want to apply specific styles
+        cell.classList.add('cell-style');
     });
-
+    });
     isFetchingTableData = false;
 }
 
 // Call the populateTable function to fetch and display the table data
 populateTable();
 
+async function fetchInflationData() {
+    const response = await fetch('http://127.0.0.1:5000/verdbolgualag');
+    return await response.json();
+}
+async function fetchforward() {
+    const response = await fetch('http://127.0.0.1:5000/framvirkir-vextir');
+    return await response.json();
+}
 const chartColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF', '#7BC225'];
 
 async function updateforward(rateType) {
@@ -246,7 +229,7 @@ async function updateforward(rateType) {
             }
         }
     });
-    isFetchingForwardRates = false;
+    isFetchingForwardRates = true;
 }
 
 updateforward('forward_rate');

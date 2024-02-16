@@ -1,10 +1,5 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-import random
-import numpy as np
-import pandas as pd
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
 from valag import *
 from framvirkir_vextir import *
 import datetime
@@ -14,32 +9,9 @@ from nss2 import *
 app = Flask(__name__)
 CORS(app)
 
-def is_market_open():
-    current_time = datetime.datetime.now().time()
-    market_close_time = datetime.time(16, 0)  # 16:00 hours
-
-    return current_time < market_close_time
-
-
-# Define a route to get the line chart data
 @app.route('/data')
 def data():
     data = nss_main()
-    # data = {
-    #     'RIKS': [random.randint(0, 100) for _ in range(10)],
-    #     'RIKB': [random.randint(0, 100) for _ in range(10)],
-    #     'ISB CB': [random.randint(0, 100) for _ in range(10)], #Spurning að beila á þetta
-    #     'ISB CBI': [random.randint(0, 100) for _ in range(10)],
-    #     'ARION CB': [random.randint(0, 100) for _ in range(10)],
-    #     'ARION CBI': [random.randint(0, 100) for _ in range(10)],
-    #     'LBANK CB': [random.randint(0, 100) for _ in range(10)],
-    #     'LBANK CBI': [random.randint(0, 100) for _ in range(10)],
-    #     'RVK': [random.randint(0, 100) for _ in range(10)],
-    #     'RVKV': [random.randint(0, 100) for _ in range(10)],
-    #     'OR': [random.randint(0, 100) for _ in range(10)],
-    #     'LSS': [random.randint(0, 100) for _ in range(10)],
-    #     'REGINN': [random.randint(0, 100) for _ in range(10)]
-    # }
     return jsonify(data)
 
 @app.route('/table_data')
@@ -48,19 +20,28 @@ def table_data():
     info = credit_spread()
     for i in range(len(info)):
         data = {
-            'Name': str(round(info[i][2], 4))+"%",
-            'Bond': str(round(info[i][3], 4))+"%",
-            'RIK': info[i][0],
-            'Credit Spread': str(round(info[i][1], 4))+"%"
+            'Name': info[i][0],
+            'RIK': str(round(info[i][2], 4))+"%",
+            'Credit Spread': str(round(info[i][3], 4))+"%",
+            'Bond': str(round(info[i][1], 4))+"%"
         }
         table_data.append(data)
     return jsonify(table_data)
 
+def test():
+    return verdlag()
+
 
 @app.route('/verdbolgualag')
 def verdbolga():
-    hnit, hnit2 = verdlag()  # Assuming verdlag() returns the desired lists
+    hnit, hnit2 = test()
     return jsonify({'hnit': hnit, 'hnit2': hnit2})
+
+# @app.route('/verdbolgualag')
+# def verdbolga():
+#     hnit = [[0.5, 9.283566120394374], [1.0, 6.96207893568177], [2.0, 5.03956727311888], [3.0, 4.5816795113614095], [4.0, 4.308549094157714], [5.0, 4.183284577594507], [6.0, 4.138406537666583], [7.0, 4.103376528358779], [8.0, 4.068346519050975], [9.0, 4.035462555453079], [10.0, 4.002830916114801], [11.0, 3.9701992767765253], [12.0, 3.9375676374382476], [13.0, 3.9403495216369633]]
+#     hnit2 = [['RIKB 24 0415', 0.1612021857923497, 11.371049361540507], ['RIKB 25 0612', 1.293023423183876, 6.116032365560529], ['RIKB 26 1015', 2.5121201531488575, 4.714934337477135], ['RIKB 28 1115', 4.312981000054467, 4.223064463036009], ['RIKB 31 0124', 5.781852100444339, 4.1380136506036385], ['RIKB 42 0217', 12.03462185346688, 3.9364378696026936]]
+#     return jsonify({'hnit': hnit, 'hnit2': hnit2})
 
 @app.route('/forward_rate')
 def forward_rate_route():

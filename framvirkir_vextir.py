@@ -81,13 +81,7 @@ def forward_rate_verdtryggt():
 #     return interpolated_forward_rates
 
 fm = forward_rate()
-print("Forward Rates:", fm)
 
 
-# fm = forward_rate_verdtryggt()
-# print("Forward Rates:", fm)
-# interpolated_fm = cubic_spline_interpolate_forward_rates(fm)
-# for key, value in interpolated_fm.items():
-#     print(key, f"{value:.4f}") 
 
     

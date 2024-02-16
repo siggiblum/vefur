@@ -34,7 +34,6 @@ def calculate_macaulay_duration(final_maturity, coupon, mid_yield, face_value=10
     return mac_dur
 
 k = calculate_macaulay_duration(datetime(2037,1,15), 1, 2.33)
-print(k)
 
 def find_dur_and_yield():
     data = {
@@ -110,8 +109,6 @@ def find_dur_and_yield():
         coupon = dic[key]['Coupon']
         coupon = float(coupon)
         mid_yield = dic[key]['Mid Yield']
-        print(coupon , mid_yield)
-        print(type(coupon) , type(mid_yield))
         face_value = 100  # Assuming a face value of 100
         macaulay_duration = calculate_macaulay_duration(final_maturity, coupon, mid_yield, face_value)
         
@@ -119,13 +116,3 @@ def find_dur_and_yield():
         result[key] = [macaulay_duration, mid_yield]
         
     return result
-
-fm = find_dur_and_yield()
-for key, value in fm.items():
-    print(key, value)
-
-# Calculate YTM
-# market_yield = fixed_rate_bond.bondYield(market_price, ql.ActualActual(ql.ActualActual.ISDA), ql.Compounded, frequency)
-# print("Market yield", market_yield)
-# print("Mid yield", mid_yield) 
-# Calculate duration

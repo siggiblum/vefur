@@ -95,6 +95,4 @@ def credit_spread():
             result.append([nafn, krafa, new_rik, cs])
     return result
 
-print(credit_spread())
-
             
