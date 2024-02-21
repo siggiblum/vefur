@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from scipy.interpolate import CubicSpline
+import matplotlib.pyplot as plt
 
 data = [
     ["RIKB 24 0415", 98.625000, 98.710000, 10.121832, 1, 0.174775, 69, "2024-04-15"],
@@ -30,8 +32,40 @@ columns = ["Nafn", "BID", "ASK", "YLD_YTM_BID", "CPN_FREQ", "DUR_MID", "DAYS_TO_
 # Create the DataFrame
 df = pd.DataFrame(data, columns=columns)
 
-rik_overd = []
-rik_verd = []
+riks_bonds = df[df['Nafn'].str.contains('RIKS')]
+rikb_bonds = df[df['Nafn'].str.contains('RIKB')]
+riks_bonds = riks_bonds.sort_values(by=["DUR_MID"])
+rikb_bonds = rikb_bonds.sort_values(by=["DUR_MID"])
 
-if ("RVKN24 1" in df["Nafn"].values):
-    print("Yes")
+# Fyrir CubicSpline, sameina rikb_bonds og riks_bonds ef þörf er á
+# Notum hér rikb_bonds sem dæmi. Gakktu úr skugga um að gögnin innihaldi ekki NaN gildi í viðkomandi dálkum
+x = rikb_bonds["DUR_MID"].dropna()
+y = rikb_bonds["YLD_YTM_BID"].dropna()
+
+# Ef þú vilt nota gögn úr bæði riks_bonds og rikb_bonds, þarftu að sameina þau gögn áður.
+# Passaðu að gögnin séu í réttri röð og án NaN gilda
+
+if len(x) > 0 and len(x) == len(y):  # Gakktu úr skugga um að lengdir séu eins og ekki tómar
+    cs = CubicSpline(x, y)
+    # Til að sýna Cubic Spline ávöxtunarkúrvu
+    xs = np.linspace(x.min(), x.max(), 200)
+    ys = cs(xs)
+    plt.figure(figsize=(10, 6))
+    plt.plot(xs, ys, label="Cubic Spline Interpolated Curve")
+    plt.scatter(x, y, color='red', label="Original Data")
+    plt.title("Cubic Spline Interpolation of Yield Curve")
+    plt.xlabel("Duration (MID)")
+    plt.ylabel("Yield (YTM_BID)")
+    plt.legend()
+    plt.show()
+else:
+    print("Data for Cubic Spline interpolation is not valid.")
+
+new_durations = np.array([3, 7, 12])  # Example durations
+
+# Use the CubicSpline object to estimate yields for these new durations
+estimated_yields = cs(new_durations)
+
+# Print the estimated yields
+for duration, yield_ in zip(new_durations, estimated_yields):
+    print(f"Estimated yield for duration {duration}: {yield_:.4f}")

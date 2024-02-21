@@ -3,7 +3,7 @@ from flask_cors import CORS
 from valag import *
 from framvirkir_vextir import *
 import datetime
-from cs1 import *
+from cs2 import *
 from nss2 import * 
 
 app = Flask(__name__)
@@ -30,7 +30,6 @@ def table_data():
 
 def test():
     return verdlag()
-
 
 @app.route('/verdbolgualag')
 def verdbolga():
